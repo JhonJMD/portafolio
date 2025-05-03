@@ -7,30 +7,18 @@ const About = () => {
     // Career timeline data
     const timeline = [
         {
-            year: '2021 - Presente',
-            role: 'Desarrollador Full Stack Senior',
-            company: 'Empresa Innovadora',
-            description: 'Liderando equipos de desarrollo y creando soluciones digitales completas.'
-        },
-        {
-            year: '2018 - 2021',
-            role: 'Desarrollador Frontend',
-            company: 'Tech Solutions',
-            description: 'Especializado en crear interfaces de usuario atractivas y accesibles.'
-        },
-        {
-            year: '2016 - 2018',
-            role: 'Ingeniero de Software Junior',
-            company: 'StartUp Digital',
-            description: 'Colaboración en proyectos de desarrollo web y aplicaciones móviles.'
+            year: '2025',
+            role: 'Desarrollador Full Stack',
+            company: 'ClonAI',
+            description: 'Desarrollo de aplicaciones full stack utilizando tecnologías modernas, ademas de desarollo de agentes de inteligencia artificial y chatbots.'
         }
     ];
 
     // Skills data
     const skills = [
-        { category: 'Frontend', items: ['React', 'Angular', 'Vue', 'TypeScript', 'Tailwind CSS'] },
-        { category: 'Backend', items: ['Node.js', 'Express', 'Python', 'Django', 'PostgreSQL'] },
-        { category: 'Herramientas', items: ['Docker', 'Git', 'CI/CD', 'AWS', 'Azure'] }
+        { category: 'Frontend', items: ['React', 'Lit', 'JavaScript', 'TypeScript', 'Tailwind CSS'] },
+        { category: 'Backend', items: ['Node.js', 'Express', 'Python', 'MySQL', 'PostgreSQL', 'Java', 'SpringBoot'] },
+        { category: 'Herramientas', items: ['Docker', 'Git', 'Linux', 'WordPress'] }
     ];
 
     return (
@@ -145,9 +133,13 @@ const About = () => {
                     </div>
 
                     <div className="bg-white dark:bg-neutral-800 p-6 rounded-lg shadow-sm">
-                        <div className="text-sm font-medium mb-1" style={{ color: siteConfig.colors.secondary }}>2012 - 2016</div>
-                        <h4 className="text-lg font-bold mb-1">Ingeniería en Sistemas</h4>
-                        <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-1">Universidad Nacional</p>
+                        <div className="text-sm font-medium mb-1" style={{ color: siteConfig.colors.secondary }}>2022 - Presente</div>
+                        <h4 className="text-lg font-bold mb-1">Tecnologia en Desarrollo de Sistemas Informaticos</h4>
+                        <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-1">Unidades Tecnologicas de Santander</p>
+                        <p className="text-neutral-700 dark:text-neutral-300">Especialización en desarrollo de software y sistemas de información.</p>
+                        <div className="text-sm font-medium mb-1 mt-4" style={{ color: siteConfig.colors.secondary }}>2023 - 2024</div>
+                        <h4 className="text-lg font-bold mb-1">Tecnico Laboral en Desarrollo de Software</h4>
+                        <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-1">CampusLands</p>
                         <p className="text-neutral-700 dark:text-neutral-300">Especialización en desarrollo de software y sistemas de información.</p>
                     </div>
                 </div>

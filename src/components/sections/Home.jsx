@@ -16,7 +16,7 @@ const Home = () => {
                         className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight"
                         style={{ color: isDarkMode ? siteConfig.colors.accent : siteConfig.colors.primary }}
                     >
-                        Full Stack Developer
+                        Desarrollador Full Stack
                     </h1>
                     <p className="text-xl md:text-2xl mb-8 text-neutral-700 dark:text-neutral-300">
                         Creando soluciones digitales con propósito e impacto

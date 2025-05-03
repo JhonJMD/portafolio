@@ -2,18 +2,18 @@
 // This file allows easy customization of portfolio content
 export const siteConfig = {
     // Personal Information
-    name: "Developer Portfolio",
-    title: "Full Stack Developer",
-    email: "contact@example.com",
+    name: "Jhon Jairo Marín Díaz",
+    title: "Desarrollador Full Stack",
+    email: "jjmdcampus@gmail.com",
     // Site content
     bio: "Desarrollador Full Stack con una profunda pasión por la tecnología y el impacto que puede generar en la vida de las personas. Combino el dominio del backend y frontend para crear soluciones funcionales, escalables y centradas en el usuario. Mi experiencia en sistemas y mantenimiento me da una visión integral del ecosistema tecnológico. Me destaco por habilidades técnicas y blandas: liderazgo empático, comunicación clara y trabajo colaborativo.",
     mission: "Desarrollar soluciones digitales con propósito, que transformen experiencias y mejoren procesos en las personas y las organizaciones.",
     vision: "Convertirme en un referente en innovación tecnológica, creando software con impacto humano.",
     // Social Media Links
     socials: {
-        linkedin: "https://linkedin.com/in/username",
-        github: "https://github.com/username",
-        whatsapp: "https://wa.me/123456789",
+        linkedin: "https://www.linkedin.com/in/jhon-jairo-mar%C3%ADn-d%C3%ADaz-0685182a4/",
+        github: "https://github.com/JhonJMD",
+        whatsapp: "https://wa.me/573124198288",
         discord: "https://discord.com/users/userid"
     },
     // Theme Colors
