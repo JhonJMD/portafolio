@@ -2,11 +2,11 @@
 // This file allows easy customization of portfolio content
 export const siteConfig = {
     // Personal Information
-    name: "Jhon Jairo Marín Díaz",
-    title: "Desarrollador Full Stack",
+    name: "Jhon Jairo Marin Diaz",
+    title: "SemiSenior Developer",
     email: "jjmdcampus@gmail.com",
     // Site content
-    bio: "Desarrollador Full Stack con una profunda pasión por la tecnología y el impacto que puede generar en la vida de las personas. Combino el dominio del backend y frontend para crear soluciones funcionales, escalables y centradas en el usuario. Mi experiencia en sistemas y mantenimiento me da una visión integral del ecosistema tecnológico. Me destaco por habilidades técnicas y blandas: liderazgo empático, comunicación clara y trabajo colaborativo.",
+    bio: "Desarrollador de Software Full Stack con una profunda fascinación por la tecnología y una sólida base de conocimientos en desarrollo web, programación backend y sistemas de cómputo. A lo largo de mi trayectoria, he adquirido competencias técnicas en lenguajes y tecnologías tanto backend como frontend, y he colaborado en diversos proyectos que me han permitido perfeccionar mis habilidades en resolución de problemas y desarrollo de software.",
     mission: "Desarrollar soluciones digitales con propósito, que transformen experiencias y mejoren procesos en las personas y las organizaciones.",
     vision: "Convertirme en un referente en innovación tecnológica, creando software con impacto humano.",
     // Social Media Links

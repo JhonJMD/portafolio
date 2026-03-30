@@ -7,18 +7,24 @@ const About = () => {
     // Career timeline data
     const timeline = [
         {
+            year: '2025/2026',
+            role: 'Desarrollador FullStack IA SemiSenior',
+            company: 'Campuslands-FullService',
+            description: 'Formo parte del equipo de desarrollo interno de Campuslands. Mi rol se enfoca en el diseño y desarrollo de flujos conversacionales y lógicos orientados a la optimización de procesos empresariales, mediante la construcción de chatbots inteligentes y agentes conversacionales. Trabajo principalmente con LangChain y LangGraph, desarrollando soluciones en Python y TypeScript que integran modelos de lenguaje.'
+        },
+        {
             year: '2025',
-            role: 'Desarrollador Full Stack',
-            company: 'ClonAI',
-            description: 'Desarrollo de aplicaciones full stack utilizando tecnologías modernas, ademas de desarollo de agentes de inteligencia artificial y chatbots.'
+            role: 'Desarrollador FullStack / IA',
+            company: 'Campuslands-CampusDev',
+            description: 'Formé parte de una startup enfocada en chatbots con IA, donde desarrollé soluciones FullStack y construí agentes Inteligentes usando LangChain y LangGraph.'
         }
     ];
 
     // Skills data
     const skills = [
-        { category: 'Frontend', items: ['React', 'Lit', 'JavaScript', 'TypeScript', 'Tailwind CSS'] },
-        { category: 'Backend', items: ['Node.js', 'Express', 'Python', 'MySQL', 'PostgreSQL', 'Java', 'SpringBoot'] },
-        { category: 'Herramientas', items: ['Docker', 'Git', 'Linux', 'WordPress'] }
+        { category: 'Frontend', items: ['React', 'Vite', 'TypeScript'] },
+        { category: 'Backend', items: ['Python', 'Java', 'SpringBoot', 'Node', 'SQL'] },
+        { category: 'Herramientas & IA', items: ['Git', 'GitHub', 'DevOps', 'LangChain/LangGraph'] }
     ];
 
     return (
@@ -133,14 +139,13 @@ const About = () => {
                     </div>
 
                     <div className="bg-white dark:bg-neutral-800 p-6 rounded-lg shadow-sm">
-                        <div className="text-sm font-medium mb-1" style={{ color: siteConfig.colors.secondary }}>2022 - Presente</div>
-                        <h4 className="text-lg font-bold mb-1">Tecnologia en Desarrollo de Sistemas Informaticos</h4>
-                        <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-1">Unidades Tecnologicas de Santander</p>
-                        <p className="text-neutral-700 dark:text-neutral-300">Especialización en desarrollo de software y sistemas de información.</p>
-                        <div className="text-sm font-medium mb-1 mt-4" style={{ color: siteConfig.colors.secondary }}>2023 - 2024</div>
-                        <h4 className="text-lg font-bold mb-1">Tecnico Laboral en Desarrollo de Software</h4>
-                        <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-1">CampusLands</p>
-                        <p className="text-neutral-700 dark:text-neutral-300">Especialización en desarrollo de software y sistemas de información.</p>
+                        <div className="text-sm font-medium mb-1" style={{ color: siteConfig.colors.secondary }}>2022 - Actualidad</div>
+                        <h4 className="text-lg font-bold mb-1">Tecnólogo en Desarrollo de Sistemas Informáticos</h4>
+                        <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-1">Unidades Tecnológicas de Santander</p>
+                        
+                        <div className="text-sm font-medium mb-1 mt-6" style={{ color: siteConfig.colors.secondary }}>2023 - 2024</div>
+                        <h4 className="text-lg font-bold mb-1">Técnico laboral en competencias de programación de software</h4>
+                        <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-1">Campuslands</p>
                     </div>
                 </div>
             </div>
