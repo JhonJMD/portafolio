@@ -64,7 +64,7 @@ export default function Home() {
         <SocialIcons />
       </div>
 
-      <div className="h-[340px] w-full flex-1 sm:h-[440px] lg:h-[560px]">
+      <div className="h-[340px] w-full shrink-0 sm:h-[440px] lg:h-[560px] lg:flex-1 lg:shrink">
         <Suspense fallback={null}>
           <ModelViewer animated={!reduceMotion} />
         </Suspense>

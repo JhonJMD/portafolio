@@ -64,7 +64,7 @@ export default function Header({ onOpenPalette }) {
           >
             <Search size={14} aria-hidden="true" /> {t('search')} <kbd className="rounded border border-line px-1">⌘K</kbd>
           </button>
-          <button type="button" onClick={toggleLang} aria-label={t('lang_switch')} className={`${iconButton} font-mono text-xs`}>
+          <button type="button" onClick={toggleLang} aria-label={`${lang === 'es' ? 'EN' : 'ES'} — ${t('lang_switch')}`} className={`${iconButton} font-mono text-xs`}>
             {lang === 'es' ? 'EN' : 'ES'}
           </button>
           <button type="button" onClick={toggleTheme} aria-label={isDarkMode ? t('to_light') : t('to_dark')} className={iconButton}>
