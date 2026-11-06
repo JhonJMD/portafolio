@@ -1,11 +1,12 @@
-import { motion, useReducedMotion } from 'motion/react';
+import { m, useReducedMotion } from 'motion/react';
 
+// Uses the lightweight `m` component; <LazyMotion> in App.jsx supplies the animation features.
 export default function Reveal({ children, delay = 0, className = '' }) {
   const reduceMotion = useReducedMotion();
   if (reduceMotion) return <div className={className}>{children}</div>;
 
   return (
-    <motion.div
+    <m.div
       className={className}
       initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -13,6 +14,6 @@ export default function Reveal({ children, delay = 0, className = '' }) {
       transition={{ duration: 0.5, delay, ease: 'easeOut' }}
     >
       {children}
-    </motion.div>
+    </m.div>
   );
 }

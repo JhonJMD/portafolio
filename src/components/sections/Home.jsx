@@ -7,7 +7,7 @@ import SocialIcons from '../ui/SocialIcons';
 
 const ModelViewer = lazy(() => import('./ModelViewer'));
 
-export default function Home() {
+export default function Home({ sceneReady = false }) {
   const { t } = useLang();
   const reduceMotion = useReducedMotion();
 
@@ -65,9 +65,11 @@ export default function Home() {
       </div>
 
       <div className="h-[340px] w-full shrink-0 sm:h-[440px] lg:h-[560px] lg:flex-1 lg:shrink">
-        <Suspense fallback={null}>
-          <ModelViewer animated={!reduceMotion} />
-        </Suspense>
+        {sceneReady && (
+          <Suspense fallback={null}>
+            <ModelViewer animated={!reduceMotion} />
+          </Suspense>
+        )}
       </div>
     </div>
   );
