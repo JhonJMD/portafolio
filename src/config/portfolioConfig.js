@@ -87,13 +87,13 @@ export const experience = [
   {
     id: 'biinteli',
     type: 'work',
-    period: { es: 'Proyecto independiente', en: 'Independent project' },
-    role: { es: 'Chatbot SaaS para gestión de pedidos', en: 'Order-management SaaS chatbot' },
+    period: { es: 'Freelance · en curso', en: 'Freelance · ongoing' },
+    role: { es: 'Desarrollador freelance — chatbot SaaS de pedidos', en: 'Freelance developer — order-management SaaS chatbot' },
     org: 'Biinteli',
-    note: { es: 'Empresa aparte', en: 'Separate company' },
+    note: { es: 'Contratado por la empresa para desarrollar su producto', en: 'Hired by the company to build its product' },
     summary: {
-      es: 'Chatbot configurable y multiempresa para pedidos, recomendación de productos según síntomas y coordinación de envíos. Primera fase en el sector farmacéutico.',
-      en: 'Configurable multi-company chatbot for orders, symptom-based product recommendations and delivery coordination. First phase in the pharmacy sector.',
+      es: 'Desarrollo, como freelancer, el chatbot SaaS multiempresa de Biinteli: gestión de pedidos, recomendación de productos según síntomas y coordinación de envíos. Primera fase en el sector farmacéutico.',
+      en: "I build Biinteli's multi-company SaaS chatbot as a freelancer: order management, symptom-based product recommendations and delivery coordination. First phase in the pharmacy sector.",
     },
     projects: ['LangGraph', 'Qdrant', 'WhatsApp'],
   },
@@ -201,11 +201,11 @@ export const projects = [
   {
     id: 'biinteli',
     name: 'Biinteli',
-    org: 'Independiente',
+    org: 'Freelance',
     category: 'ai',
     description: {
-      es: 'Chatbot SaaS multiempresa para pedidos por WhatsApp, con paneles de administración. Primera fase: sector farmacéutico.',
-      en: 'Multi-company SaaS chatbot for WhatsApp orders, with admin panels. First phase: pharmacy sector.',
+      es: 'Producto de Biinteli que desarrollo como freelancer: chatbot SaaS multiempresa para pedidos por WhatsApp, con paneles de administración. Primera fase: sector farmacéutico.',
+      en: "Biinteli's product, which I build as a freelancer: multi-company SaaS chatbot for WhatsApp orders, with admin panels. First phase: pharmacy sector.",
     },
     stack: ['LangGraph', 'Qdrant', 'Express', 'TypeScript', 'WhatsApp'],
   },
