@@ -1,299 +1,99 @@
 import { useState } from 'react';
-import { Send, CheckCircle, MapPin, Phone, Mail } from 'lucide-react';
+import { Send } from 'lucide-react';
 import { siteConfig } from '../../config/portfolioConfig';
+import { useLang } from '../../context/LanguageContext';
+import Reveal from '../ui/Reveal';
 import SectionTitle from '../ui/SectionTitle';
 import SocialIcons from '../ui/SocialIcons';
 
-const Contact = () => {
-    // Form state
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        subject: '',
-        message: ''
-    });
+const WEB3FORMS_URL = 'https://api.web3forms.com/submit';
+const inputClass =
+  'min-h-11 w-full rounded-lg border border-line bg-bg px-3 py-2.5 text-ink outline-none transition-colors focus:border-accent';
 
-    // Form submission state
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [isSubmitted, setIsSubmitted] = useState(false);
-    const [error, setError] = useState('');
+async function sendMessage(fields) {
+  const response = await fetch(WEB3FORMS_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify({ access_key: siteConfig.web3formsKey, subject: `Portafolio — ${fields.name}`, ...fields }),
+  });
+  const result = await response.json();
+  if (!response.ok || !result.success) throw new Error(result.message || 'Request failed');
+}
 
-    // Handle input changes
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value
-        });
-    };
+export default function Contact() {
+  const { t } = useLang();
+  const [status, setStatus] = useState('idle');
 
-    // Handle form submission
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        setIsSubmitting(true);
-        setError('');
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const data = new FormData(form);
+    // Honeypot: bots fill the hidden field; pretend success and drop the message.
+    if (data.get('botcheck')) {
+      setStatus('sent');
+      return;
+    }
+    const fields = { name: data.get('name'), email: data.get('email'), message: data.get('message') };
 
-        // Validate form
-        if (!formData.name || !formData.email || !formData.message) {
-            setError('Por favor, completa todos los campos requeridos.');
-            setIsSubmitting(false);
-            return;
-        }
+    if (!siteConfig.web3formsKey) {
+      const body = encodeURIComponent(`${fields.message}\n\n— ${fields.name} (${fields.email})`);
+      window.location.href = `mailto:${siteConfig.email}?subject=${encodeURIComponent(`Portafolio — ${fields.name}`)}&body=${body}`;
+      return;
+    }
 
-        // Simulate form submission
-        setTimeout(() => {
-            // In a real implementation, you would use a service like EmailJS
-            // or submit to a backend API
-            console.log('Form submitted:', formData);
-            setIsSubmitting(false);
-            setIsSubmitted(true);
-            setFormData({
-                name: '',
-                email: '',
-                subject: '',
-                message: ''
-            });
+    setStatus('sending');
+    try {
+      await sendMessage(fields);
+      setStatus('sent');
+      form.reset();
+    } catch {
+      setStatus('error');
+    }
+  };
 
-            // Reset submission status after 5 seconds
-            setTimeout(() => {
-                setIsSubmitted(false);
-            }, 5000);
-        }, 1500);
-    };
+  return (
+    <div className="mx-auto max-w-6xl px-4 py-24 md:px-8">
+      <SectionTitle eyebrow={t('contact_eyebrow')} title={t('contact_title')} intro={t('contact_intro')} />
 
-    return (
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <SectionTitle
-                title="Contacto"
-                subtitle="¿Tienes un proyecto en mente? ¡Hablemos!"
-            />
+      <div className="grid gap-10 lg:grid-cols-2">
+        <Reveal>
+          <div className="flex flex-col gap-5">
+            <a href={`mailto:${siteConfig.email}`} className="w-fit font-display text-2xl font-semibold text-accent hover:underline">
+              {siteConfig.email}
+            </a>
+            <SocialIcons />
+          </div>
+        </Reveal>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                {/* Contact Info */}
-                <div>
-                    <h3 className="text-2xl font-bold mb-6">Información de contacto</h3>
-
-                    <div className="space-y-6 mb-8">
-                        <div className="flex items-start">
-                            <div
-                                className="p-3 rounded-full mr-4"
-                                style={{ backgroundColor: `${siteConfig.colors.accent}20` }}
-                            >
-                                <MapPin size={20} style={{ color: siteConfig.colors.secondary }} />
-                            </div>
-                            <div>
-                                <h4 className="font-semibold mb-1">Ubicación</h4>
-                                <p className="text-neutral-600 dark:text-neutral-400">
-                                    Ciudad, País
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="flex items-start">
-                            <div
-                                className="p-3 rounded-full mr-4"
-                                style={{ backgroundColor: `${siteConfig.colors.accent}20` }}
-                            >
-                                <Mail size={20} style={{ color: siteConfig.colors.secondary }} />
-                            </div>
-                            <div>
-                                <h4 className="font-semibold mb-1">Email</h4>
-                                <p className="text-neutral-600 dark:text-neutral-400">
-                                    {siteConfig.email}
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="flex items-start">
-                            <div
-                                className="p-3 rounded-full mr-4"
-                                style={{ backgroundColor: `${siteConfig.colors.accent}20` }}
-                            >
-                                <Phone size={20} style={{ color: siteConfig.colors.secondary }} />
-                            </div>
-                            <div>
-                                <h4 className="font-semibold mb-1">Teléfono</h4>
-                                <p className="text-neutral-600 dark:text-neutral-400">
-                                    +1 (123) 456-7890
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Social Media */}
-                    <div className="mt-8">
-                        <h4 className="text-lg font-semibold mb-4">Sígueme en redes sociales</h4>
-                        <SocialIcons />
-                    </div>
-
-                    {/* Availability */}
-                    <div
-                        className="mt-12 p-6 rounded-lg relative overflow-hidden"
-                        style={{ backgroundColor: siteConfig.colors.secondary }}
-                    >
-                        {/* Background Pattern */}
-                        <div className="absolute inset-0 opacity-10">
-                            <div className="absolute top-0 right-0 w-40 h-40 rounded-full" style={{ backgroundColor: '#fff' }}></div>
-                            <div className="absolute bottom-0 left-0 w-24 h-24 rounded-full" style={{ backgroundColor: '#fff' }}></div>
-                        </div>
-
-                        <div className="relative z-10">
-                            <h4 className="text-xl font-bold mb-3 text-white">
-                                Disponibilidad
-                            </h4>
-                            <p className="text-neutral-200 mb-4">
-                                Actualmente disponible para proyectos freelance y oportunidades de colaboración.
-                            </p>
-                            <p className="text-neutral-200">
-                                <strong>Respuesta típica:</strong> 24-48 horas
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Contact Form */}
-                <div>
-                    <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg p-8">
-                        <h3 className="text-2xl font-bold mb-6">Envíame un mensaje</h3>
-
-                        {isSubmitted ? (
-                            <div
-                                className="bg-green-50 dark:bg-green-900 dark:bg-opacity-20 border border-green-200 dark:border-green-700 rounded-lg p-6 text-center"
-                            >
-                                <CheckCircle
-                                    size={48}
-                                    className="mx-auto mb-4 text-green-500"
-                                />
-                                <h4 className="text-xl font-bold mb-2 text-green-700 dark:text-green-300">
-                                    ¡Mensaje enviado!
-                                </h4>
-                                <p className="text-green-600 dark:text-green-400">
-                                    Gracias por contactarme. Te responderé lo antes posible.
-                                </p>
-                            </div>
-                        ) : (
-                            <form onSubmit={handleSubmit}>
-                                {/* Error message */}
-                                {error && (
-                                    <div className="mb-6 p-4 bg-red-50 dark:bg-red-900 dark:bg-opacity-20 border border-red-200 dark:border-red-700 rounded-lg text-red-700 dark:text-red-300">
-                                        {error}
-                                    </div>
-                                )}
-
-                                <div className="mb-6">
-                                    <label
-                                        htmlFor="name"
-                                        className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2"
-                                    >
-                                        Nombre *
-                                    </label>
-                                    <input
-                                        type="text"
-                                        id="name"
-                                        name="name"
-                                        value={formData.name}
-                                        onChange={handleChange}
-                                        required
-                                        className="w-full px-4 py-3 rounded-lg border border-neutral-300 dark:border-neutral-700 bg-transparent text-neutral-900 dark:text-neutral-100 focus:outline-none focus:ring-2 transition-all"
-                                        style={{
-                                            '--ring-color': siteConfig.colors.secondary,
-                                            focusRingColor: 'var(--ring-color)'
-                                        }}
-                                    />
-                                </div>
-
-                                <div className="mb-6">
-                                    <label
-                                        htmlFor="email"
-                                        className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2"
-                                    >
-                                        Email *
-                                    </label>
-                                    <input
-                                        type="email"
-                                        id="email"
-                                        name="email"
-                                        value={formData.email}
-                                        onChange={handleChange}
-                                        required
-                                        className="w-full px-4 py-3 rounded-lg border border-neutral-300 dark:border-neutral-700 bg-transparent text-neutral-900 dark:text-neutral-100 focus:outline-none focus:ring-2 transition-all"
-                                        style={{
-                                            '--ring-color': siteConfig.colors.secondary,
-                                            focusRingColor: 'var(--ring-color)'
-                                        }}
-                                    />
-                                </div>
-
-                                <div className="mb-6">
-                                    <label
-                                        htmlFor="subject"
-                                        className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2"
-                                    >
-                                        Asunto
-                                    </label>
-                                    <input
-                                        type="text"
-                                        id="subject"
-                                        name="subject"
-                                        value={formData.subject}
-                                        onChange={handleChange}
-                                        className="w-full px-4 py-3 rounded-lg border border-neutral-300 dark:border-neutral-700 bg-transparent text-neutral-900 dark:text-neutral-100 focus:outline-none focus:ring-2 transition-all"
-                                        style={{
-                                            '--ring-color': siteConfig.colors.secondary,
-                                            focusRingColor: 'var(--ring-color)'
-                                        }}
-                                    />
-                                </div>
-
-                                <div className="mb-6">
-                                    <label
-                                        htmlFor="message"
-                                        className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2"
-                                    >
-                                        Mensaje *
-                                    </label>
-                                    <textarea
-                                        id="message"
-                                        name="message"
-                                        value={formData.message}
-                                        onChange={handleChange}
-                                        required
-                                        rows={5}
-                                        className="w-full px-4 py-3 rounded-lg border border-neutral-300 dark:border-neutral-700 bg-transparent text-neutral-900 dark:text-neutral-100 focus:outline-none focus:ring-2 transition-all"
-                                        style={{
-                                            '--ring-color': siteConfig.colors.secondary,
-                                            focusRingColor: 'var(--ring-color)'
-                                        }}
-                                    ></textarea>
-                                </div>
-
-                                <button
-                                    type="submit"
-                                    disabled={isSubmitting}
-                                    className="w-full px-6 py-3 rounded-lg text-white font-medium flex items-center justify-center transition-all"
-                                    style={{
-                                        backgroundColor: isSubmitting ? '#ccc' : siteConfig.colors.secondary
-                                    }}
-                                >
-                                    {isSubmitting ? (
-                                        <>
-                                            <div className="animate-spin mr-2 h-5 w-5 border-2 border-white border-t-transparent rounded-full"></div>
-                                            Enviando...
-                                        </>
-                                    ) : (
-                                        <>
-                                            Enviar mensaje
-                                            <Send size={18} className="ml-2" />
-                                        </>
-                                    )}
-                                </button>
-                            </form>
-                        )}
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-};
-
-export default Contact;
+        <Reveal delay={0.1}>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4 rounded-2xl border border-line bg-surface/80 p-6 backdrop-blur">
+            <label className="flex flex-col gap-1.5 text-sm text-muted">
+              {t('form_name')}
+              <input name="name" type="text" required maxLength={100} autoComplete="name" className={inputClass} />
+            </label>
+            <label className="flex flex-col gap-1.5 text-sm text-muted">
+              {t('form_email')}
+              <input name="email" type="email" required maxLength={150} autoComplete="email" className={inputClass} />
+            </label>
+            <label className="flex flex-col gap-1.5 text-sm text-muted">
+              {t('form_message')}
+              <textarea name="message" required rows={5} maxLength={2000} className={`${inputClass} resize-y`} />
+            </label>
+            <input type="checkbox" name="botcheck" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
+            <button
+              type="submit"
+              disabled={status === 'sending'}
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-accent px-6 font-semibold text-onaccent transition-transform hover:-translate-y-0.5 disabled:opacity-60"
+            >
+              <Send size={16} aria-hidden="true" /> {status === 'sending' ? t('form_sending') : t('form_send')}
+            </button>
+            <p role="status" aria-live="polite" className={`min-h-5 text-sm ${status === 'error' ? 'text-red-500' : 'text-accent'}`}>
+              {status === 'sent' && t('form_sent')}
+              {status === 'error' && t('form_error')}
+            </p>
+          </form>
+        </Reveal>
+      </div>
+    </div>
+  );
+}

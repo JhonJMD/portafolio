@@ -1,53 +1,29 @@
-import { Linkedin, Github, MessageCircle, MessagesSquare } from 'lucide-react';
+import { Github, Linkedin, MessageCircle, Mail } from 'lucide-react';
 import { siteConfig } from '../../config/portfolioConfig';
 
-const SocialIcons = () => {
-    const { socials } = siteConfig;
+const links = [
+  { label: 'GitHub', href: siteConfig.socials.github, Icon: Github },
+  { label: 'LinkedIn', href: siteConfig.socials.linkedin, Icon: Linkedin },
+  { label: 'WhatsApp', href: siteConfig.socials.whatsapp, Icon: MessageCircle },
+  { label: 'Email', href: `mailto:${siteConfig.email}`, Icon: Mail },
+];
 
-    return (
-        <div className="flex space-x-4">
-            {/* LinkedIn */}
-            <a
-                href={socials.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="LinkedIn"
-                className="text-neutral-400 hover:text-blue-500 transition-colors duration-300"
-            >
-                <Linkedin size={20} />
-            </a>
-            {/* GitHub */}
-            <a
-                href={socials.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="GitHub"
-                className="text-neutral-400 hover:text-neutral-100 transition-colors duration-300"
-            >
-                <Github size={20} />
-            </a>
-            {/* WhatsApp */}
-            <a
-                href={socials.whatsapp}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="WhatsApp"
-                className="text-neutral-400 hover:text-green-500 transition-colors duration-300"
-            >
-                <MessageCircle size={20} />
-            </a>
-            {/* Discord */}
-            <a
-                href={socials.discord}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Discord"
-                className="text-neutral-400 hover:text-indigo-400 transition-colors duration-300"
-            >
-                <MessagesSquare size={20} />
-            </a>
-        </div>
-    );
-};
-
-export default SocialIcons;
+export default function SocialIcons({ className = '' }) {
+  return (
+    <ul className={`flex items-center gap-2 ${className}`}>
+      {links.map(({ label, href, Icon }) => (
+        <li key={label}>
+          <a
+            href={href}
+            target={href.startsWith('http') ? '_blank' : undefined}
+            rel="noopener noreferrer"
+            aria-label={label}
+            className="flex h-11 w-11 items-center justify-center rounded-lg border border-line text-muted transition-colors hover:border-accent hover:text-accent"
+          >
+            <Icon size={18} aria-hidden="true" />
+          </a>
+        </li>
+      ))}
+    </ul>
+  );
+}

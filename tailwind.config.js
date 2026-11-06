@@ -1,24 +1,25 @@
 /** @type {import('tailwindcss').Config} */
+const token = (name) => `rgb(var(--${name}) / <alpha-value>)`;
+
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        primary: '#26010B',
-        secondary: '#A64669',
-        accent: '#F2DB94',
-        light: '#F2F2F2',
-        dark: '#0D0D0D',
+        bg: token('bg'),
+        surface: token('surface'),
+        line: token('line'),
+        ink: token('ink'),
+        muted: token('muted'),
+        accent: token('accent'),
+        accent2: token('accent2'),
+        onaccent: token('on-accent'),
       },
       fontFamily: {
-        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
-      },
-      spacing: {
-        '128': '32rem',
-      },
-      animation: {
-        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        display: ['"Space Grotesk"', 'Inter', 'ui-sans-serif', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
       },
     },
   },
