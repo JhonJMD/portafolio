@@ -11,7 +11,8 @@ export function ThemeProvider({ children }) {
         if (savedTheme) {
             return savedTheme === 'dark';
         }
-        return window.matchMedia('(prefers-color-scheme: dark)').matches;
+        // Dark is the intended first impression; light is opt-in.
+        return true;
     });
 
     // Toggle theme function

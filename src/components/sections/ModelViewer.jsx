@@ -1,59 +1,101 @@
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls, PerspectiveCamera, Float, Icosahedron } from '@react-three/drei';
-import { Suspense } from 'react';
+import { useMemo, useRef } from 'react';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { Icosahedron, Line } from '@react-three/drei';
 import { useTheme } from '../../context/ThemeContext';
-import { siteConfig } from '../../config/portfolioConfig';
+import { scenePalette } from '../../config/portfolioConfig';
 
-function TechModel() {
-    const { isDarkMode } = useTheme();
-    
-    return (
-        <Float speed={2} rotationIntensity={1.5} floatIntensity={2}>
-            <Icosahedron args={[1.2, 0]}>
-                <meshStandardMaterial 
-                    color={isDarkMode ? siteConfig.colors.secondary : siteConfig.colors.primary}
-                    metalness={0.5} 
-                    roughness={0.2} 
-                />
-            </Icosahedron>
-            {/* Outer wireframe */}
-            <Icosahedron args={[1.5, 1]}>
-                <meshBasicMaterial 
-                    color={siteConfig.colors.accent} 
-                    wireframe 
-                    transparent 
-                    opacity={0.3} 
-                />
-            </Icosahedron>
-        </Float>
-    );
+const NODE_COUNT = 9;
+const ORBIT_RADIUS = 2.3;
+
+// Evenly spread points on a sphere (Fibonacci lattice).
+function sphereNodes(count, radius) {
+  const golden = Math.PI * (3 - Math.sqrt(5));
+  return Array.from({ length: count }, (_, i) => {
+    const y = 1 - (i / (count - 1)) * 2;
+    const ring = Math.sqrt(1 - y * y);
+    const angle = golden * i;
+    return [Math.cos(angle) * ring * radius, y * radius, Math.sin(angle) * ring * radius];
+  });
 }
 
-const ModelViewer = () => {
-    return (
-        <div className="w-full h-full rounded-lg overflow-hidden relative">
-            <Canvas shadows className="bg-transparent">
-                <Suspense fallback={null}>
-                    <PerspectiveCamera makeDefault position={[0, 0, 5]} />
-                    <ambientLight intensity={0.5} />
-                    <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} />
-                    <pointLight position={[-10, -10, -10]} intensity={0.5} />
+function Pulse({ target, color, offset, animated }) {
+  const ref = useRef();
+  useFrame(({ clock }) => {
+    const progress = animated ? (clock.elapsedTime * 0.35 + offset) % 1 : 0.5;
+    ref.current.position.set(target[0] * progress, target[1] * progress, target[2] * progress);
+  });
+  return (
+    <mesh ref={ref}>
+      <sphereGeometry args={[0.06, 12, 12]} />
+      <meshBasicMaterial color={color} />
+    </mesh>
+  );
+}
 
-                    <TechModel />
+function AgentGraph({ animated }) {
+  const { isDarkMode } = useTheme();
+  const colors = scenePalette[isDarkMode ? 'dark' : 'light'];
+  const group = useRef();
+  const ringA = useRef();
+  const ringB = useRef();
+  const nodes = useMemo(() => sphereNodes(NODE_COUNT, ORBIT_RADIUS), []);
 
-                    <OrbitControls
-                        enableZoom={false}
-                        autoRotate
-                        autoRotateSpeed={2}
-                    />
-                </Suspense>
-            </Canvas>
+  useFrame((state, delta) => {
+    if (!animated) return;
+    group.current.rotation.y += delta * 0.12;
+    group.current.rotation.x += (state.pointer.y * 0.35 - group.current.rotation.x) * 0.04;
+    ringA.current.rotation.z += delta * 0.25;
+    ringB.current.rotation.z -= delta * 0.18;
+  });
 
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-sm text-neutral-500 bg-white dark:bg-neutral-800 px-3 py-1 rounded-full shadow-md z-10 whitespace-nowrap">
-                Interactúa con el modelo 3D
-            </div>
-        </div>
-    );
-};
+  return (
+    <group ref={group}>
+      <Icosahedron args={[0.95, 1]}>
+        <meshBasicMaterial color={colors.accent} wireframe transparent opacity={0.85} />
+      </Icosahedron>
+      <Icosahedron args={[0.5, 0]}>
+        <meshStandardMaterial color={colors.accent2} emissive={colors.accent2} emissiveIntensity={0.6} roughness={0.3} metalness={0.4} />
+      </Icosahedron>
 
-export default ModelViewer;
+      {nodes.map((position, index) => {
+        const color = index % 2 === 0 ? colors.accent : colors.accent2;
+        return (
+          <group key={position.join(',')}>
+            <Line points={[[0, 0, 0], position]} color={colors.dim} lineWidth={1} transparent opacity={0.7} />
+            <mesh position={position}>
+              <sphereGeometry args={[0.13, 16, 16]} />
+              <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.5} />
+            </mesh>
+            <Pulse target={position} color={color} offset={index / NODE_COUNT} animated={animated} />
+          </group>
+        );
+      })}
+
+      <mesh ref={ringA} rotation={[Math.PI / 2.4, 0, 0]}>
+        <torusGeometry args={[ORBIT_RADIUS + 0.5, 0.012, 8, 160]} />
+        <meshBasicMaterial color={colors.accent} transparent opacity={0.45} />
+      </mesh>
+      <mesh ref={ringB} rotation={[Math.PI / 1.7, 0.5, 0]}>
+        <torusGeometry args={[ORBIT_RADIUS + 0.9, 0.01, 8, 160]} />
+        <meshBasicMaterial color={colors.accent2} transparent opacity={0.35} />
+      </mesh>
+    </group>
+  );
+}
+
+export default function ModelViewer({ animated = true }) {
+  return (
+    <div className="h-full w-full" role="img" aria-label="Grafo 3D de un agente de IA con nodos conectados">
+      <Canvas
+        dpr={[1, 1.75]}
+        frameloop={animated ? 'always' : 'demand'}
+        camera={{ position: [0, 0, 10], fov: 45 }}
+        gl={{ alpha: true, antialias: true }}
+      >
+        <ambientLight intensity={0.7} />
+        <pointLight position={[6, 6, 6]} intensity={30} />
+        <AgentGraph animated={animated} />
+      </Canvas>
+    </div>
+  );
+}

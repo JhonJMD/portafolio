@@ -1,14 +1,39 @@
 <!doctype html>
-<html lang="es">
+<html lang="es" class="dark">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Portfolio Desarrollador Full Stack</title>
-    <meta name="description" content="Desarrollador Full Stack con experiencia en crear soluciones digitales con propósito e impacto">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Jhon Jairo Marín — Full Stack &amp; Agentes de IA</title>
+    <meta name="description" content="Desarrollador Full Stack especializado en agentes de IA con LangChain y LangGraph. Te ayudo a aterrizar tu idea de negocio y a optimizar tus procesos." />
+    <meta name="theme-color" content="#0B0D12" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Jhon Jairo Marín — Full Stack & Agentes de IA" />
+    <meta property="og:description" content="Agentes conversacionales, automatización de procesos y desarrollo Full Stack." />
+    <meta name="twitter:card" content="summary" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+    <script>
+      // Apply the saved theme before first paint to avoid a flash. Dark is the default.
+      try {
+        var t = localStorage.getItem('theme');
+        if (t === 'light') document.documentElement.classList.remove('dark');
+      } catch (e) {}
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Jhon Jairo Marín Díaz",
+        "jobTitle": "Full Stack Developer",
+        "address": { "@type": "PostalAddress", "addressRegion": "Santander", "addressCountry": "CO" },
+        "sameAs": [
+          "https://github.com/JhonJMD",
+          "https://www.linkedin.com/in/jhon-jairo-mar%C3%ADn-d%C3%ADaz-0685182a4/"
+        ]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

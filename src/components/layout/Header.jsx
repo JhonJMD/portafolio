@@ -1,160 +1,104 @@
-import { useState, useEffect } from 'react';
-import { Menu, X, Moon, Sun } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Menu, Moon, Search, Sun, X } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
-import { siteConfig } from '../../config/portfolioConfig';
+import { useLang } from '../../context/LanguageContext';
 
-const Header = ({ activeSection, onSectionChange }) => {
-    const [isScrolled, setIsScrolled] = useState(false);
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const { isDarkMode, toggleTheme } = useTheme();
+const SECTIONS = ['home', 'experience', 'projects', 'github', 'contact'];
 
-    // Navigation items
-    const navItems = [
-        { id: 'home', label: 'Inicio' },
-        { id: 'about', label: 'Sobre mí' },
-        { id: 'mission-vision', label: 'Misión y Visión' },
-        { id: 'projects', label: 'Proyectos' },
-        { id: 'services', label: 'Servicios' },
-        { id: 'contact', label: 'Contacto' },
-    ];
+function useActiveSection() {
+  const [active, setActive] = useState('home');
 
-    // Handle scroll event to change header style
-    useEffect(() => {
-        const handleScroll = () => {
-            setIsScrolled(window.scrollY > 50);
-        };
-
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
-
-    // Mobile menu toggle
-    const toggleMobileMenu = () => {
-        setMobileMenuOpen(!mobileMenuOpen);
-    };
-
-    // Handle navigation item click
-    const handleNavClick = (sectionId) => {
-        onSectionChange(sectionId);
-        setMobileMenuOpen(false);
-    };
-
-    return (
-        <header
-            className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
-                ? 'bg-white bg-opacity-90 dark:bg-neutral-900 dark:bg-opacity-90 backdrop-blur-sm shadow-md py-4'
-                : 'bg-transparent py-6'
-                }`}
-        >
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between items-center">
-                    {/* Logo */}
-                    <div className="flex items-center">
-                        <a
-                            href="#home"
-                            className="text-xl md:text-2xl font-bold text-primary dark:text-accent"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                handleNavClick('home');
-                            }}
-                            style={{ color: siteConfig.colors.primary }}
-                        >
-                            {siteConfig.name}
-                        </a>
-                    </div>
-
-                    {/* Desktop Navigation */}
-                    <nav className="hidden md:flex items-center space-x-8">
-                        {navItems.map((item) => (
-                            <a
-                                key={item.id}
-                                href={`#${item.id}`}
-                                className={`transition-colors duration-300 hover:text-secondary dark:hover:text-accent ${activeSection === item.id
-                                    ? 'text-secondary dark:text-accent font-medium'
-                                    : 'text-neutral-700 dark:text-neutral-300'
-                                }`}
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    handleNavClick(item.id);
-                                }}
-                                style={{
-                                    color: activeSection === item.id ? siteConfig.colors.secondary : ''
-                                }}
-                            >
-                                {item.label}
-                            </a>
-                        ))}
-                        {/* Theme toggle button */}
-                        <button
-                            onClick={toggleTheme}
-                            className="p-2 rounded-full hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors"
-                            aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-                        >
-                            {isDarkMode ? (
-                                <Sun size={20} className="text-accent" />
-                            ) : (
-                                <Moon size={20} className="text-primary" />
-                            )}
-                        </button>
-                    </nav>
-
-                    {/* Mobile Menu Button */}
-                    <div className="flex items-center md:hidden">
-                        <button
-                            onClick={toggleTheme}
-                            className="p-2 mr-2 rounded-full hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors"
-                            aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-                        >
-                            {isDarkMode ? (
-                                <Sun size={20} className="text-accent" />
-                            ) : (
-                                <Moon size={20} className="text-primary" />
-                            )}
-                        </button>
-
-                        <button
-                            onClick={toggleMobileMenu}
-                            className="p-2 rounded-md text-neutral-700 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors"
-                            aria-label="Toggle menu"
-                        >
-                            {mobileMenuOpen ? (
-                                <X size={24} />
-                            ) : (
-                                <Menu size={24} />
-                            )}
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            {/* Mobile Menu */}
-            {mobileMenuOpen && (
-                <div className="md:hidden bg-white dark:bg-neutral-900 shadow-lg">
-                    <div className="py-4 px-4 space-y-4">
-                        {navItems.map((item) => (
-                            <a
-                                key={item.id}
-                                href={`#${item.id}`}
-                                className={`block py-2 transition-colors duration-300 ${activeSection === item.id
-                                    ? 'text-secondary dark:text-accent font-medium'
-                                    : 'text-neutral-700 dark:text-neutral-300'
-                                }`}
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    handleNavClick(item.id);
-                                }}
-                                style={{
-                                    color: activeSection === item.id ? siteConfig.colors.secondary : ''
-                                }}
-                            >
-                                {item.label}
-                            </a>
-                        ))}
-                    </div>
-                </div>
-            )}
-        </header>
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActive(entry.target.id);
+        });
+      },
+      { rootMargin: '-45% 0px -50% 0px' },
     );
-};
+    SECTIONS.forEach((id) => {
+      const element = document.getElementById(id);
+      if (element) observer.observe(element);
+    });
+    return () => observer.disconnect();
+  }, []);
 
-export default Header;
+  return active;
+}
+
+export default function Header({ onOpenPalette }) {
+  const { isDarkMode, toggleTheme } = useTheme();
+  const { lang, toggleLang, t } = useLang();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const active = useActiveSection();
+
+  const iconButton =
+    'flex h-11 w-11 items-center justify-center rounded-lg border border-line text-muted transition-colors hover:border-accent hover:text-accent';
+
+  return (
+    <header className="fixed inset-x-0 top-0 z-40 border-b border-line/60 bg-bg/70 backdrop-blur-md">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 md:px-8">
+        <a href="#home" className="font-display text-xl font-bold">
+          JM<span className="text-accent">.</span>
+        </a>
+
+        <nav aria-label="Principal" className="hidden items-center gap-7 text-sm md:flex">
+          {SECTIONS.map((id) => (
+            <a
+              key={id}
+              href={`#${id}`}
+              aria-current={active === id ? 'true' : undefined}
+              className={`transition-colors hover:text-ink ${active === id ? 'text-accent' : 'text-muted'}`}
+            >
+              {t(`nav_${id}`)}
+            </a>
+          ))}
+        </nav>
+
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={onOpenPalette}
+            className="hidden h-11 items-center gap-2 rounded-lg border border-line px-3 font-mono text-xs text-muted transition-colors hover:border-accent hover:text-accent sm:flex"
+          >
+            <Search size={14} aria-hidden="true" /> {t('search')} <kbd className="rounded border border-line px-1">⌘K</kbd>
+          </button>
+          <button type="button" onClick={toggleLang} aria-label={t('lang_switch')} className={`${iconButton} font-mono text-xs`}>
+            {lang === 'es' ? 'EN' : 'ES'}
+          </button>
+          <button type="button" onClick={toggleTheme} aria-label={isDarkMode ? t('to_light') : t('to_dark')} className={iconButton}>
+            {isDarkMode ? <Sun size={18} aria-hidden="true" /> : <Moon size={18} aria-hidden="true" />}
+          </button>
+          <button
+            type="button"
+            onClick={() => setMenuOpen((open) => !open)}
+            aria-label={t('menu')}
+            aria-expanded={menuOpen}
+            className={`${iconButton} md:hidden`}
+          >
+            {menuOpen ? <X size={18} aria-hidden="true" /> : <Menu size={18} aria-hidden="true" />}
+          </button>
+        </div>
+      </div>
+
+      {menuOpen && (
+        <nav aria-label="Móvil" className="border-t border-line/60 bg-bg/95 px-4 py-3 md:hidden">
+          <ul className="flex flex-col">
+            {SECTIONS.map((id) => (
+              <li key={id}>
+                <a
+                  href={`#${id}`}
+                  onClick={() => setMenuOpen(false)}
+                  className="block rounded-lg px-3 py-3 text-muted hover:bg-surface hover:text-ink"
+                >
+                  {t(`nav_${id}`)}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
+    </header>
+  );
+}

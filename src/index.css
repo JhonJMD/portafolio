@@ -2,64 +2,90 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Light theme (default tokens) — "Nocturno IA" is the .dark set below. */
 :root {
-  --primary: #26010B;
-  --secondary: #A64669;
-  --accent: #F2DB94;
-  --light: #F2F2F2;
-  --dark: #0D0D0D;
+  --bg: 246 248 251;
+  --surface: 255 255 255;
+  --line: 218 224 234;
+  --ink: 15 23 42;
+  --muted: 81 92 112;
+  --accent: 15 118 110;
+  --accent2: 109 40 217;
+  --on-accent: 255 255 255;
+}
+
+.dark {
+  --bg: 11 13 18;
+  --surface: 20 24 35;
+  --line: 35 42 59;
+  --ink: 232 236 244;
+  --muted: 152 162 184;
+  --accent: 94 234 212;
+  --accent2: 167 139 250;
+  --on-accent: 11 13 18;
 }
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  margin: 0;
+  background-color: rgb(var(--bg));
+  color: rgb(var(--ink));
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Animation for typing effect in 3D model */
-@keyframes typing {
-  from {
-    width: 0
-  }
-
-  to {
-    width: 100%
-  }
+::selection {
+  background: rgb(var(--accent) / 0.3);
 }
 
-.animate-typing {
-  animation: typing 2s steps(20, end) infinite;
+:focus-visible {
+  outline: 2px solid rgb(var(--accent));
+  outline-offset: 3px;
+  border-radius: 6px;
 }
 
-/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: rgb(var(--bg));
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--secondary);
+  background: rgb(var(--line));
   border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--primary);
+  background: rgb(var(--accent));
 }
 
-/* Dark mode adjustments for scrollbar */
-.dark ::-webkit-scrollbar-track {
-  background: #333;
+/* Soft aurora behind the hero, GPU-cheap (opacity/transform only). */
+@keyframes drift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(3%, -4%, 0) scale(1.08); }
 }
 
-.dark ::-webkit-scrollbar-thumb {
-  background: var(--secondary);
+.aurora {
+  animation: drift 18s ease-in-out infinite;
 }
 
-.dark ::-webkit-scrollbar-thumb:hover {
-  background: var(--accent);
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .aurora { animation: none; }
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
 }
