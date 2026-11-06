@@ -39,7 +39,7 @@ body {
   margin: 0;
   background-color: rgb(var(--bg));
   color: rgb(var(--ink));
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-family: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
@@ -79,6 +79,16 @@ body {
 
 .aurora {
   animation: drift 18s ease-in-out infinite;
+}
+
+/* 3D scenes mount after first paint; fade them in instead of popping. */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.fade-in {
+  animation: fade-in 0.8s ease-out both;
 }
 
 @media (prefers-reduced-motion: reduce) {

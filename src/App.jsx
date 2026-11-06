@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
-import { useReducedMotion } from 'motion/react';
+import { LazyMotion, domAnimation, useReducedMotion } from 'motion/react';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import Home from './components/sections/Home';
@@ -13,10 +13,40 @@ import { ThemeProvider } from './context/ThemeContext';
 import { LanguageProvider } from './context/LanguageContext';
 
 const BackgroundScene = lazy(() => import('./components/sections/BackgroundScene'));
+const FALLBACK_IDLE_DELAY_MS = 1200;
+const IDLE_TIMEOUT_MS = 3000;
+
+// True once the page has loaded and the browser is idle, so heavy 3D work never competes with first paint.
+function useIdleReady() {
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    let idleId;
+    let timerId;
+    const arm = () => {
+      if ('requestIdleCallback' in window) {
+        idleId = window.requestIdleCallback(() => setReady(true), { timeout: IDLE_TIMEOUT_MS });
+      } else {
+        timerId = setTimeout(() => setReady(true), FALLBACK_IDLE_DELAY_MS);
+      }
+    };
+    if (document.readyState === 'complete') arm();
+    else window.addEventListener('load', arm, { once: true });
+
+    return () => {
+      window.removeEventListener('load', arm);
+      if (idleId) window.cancelIdleCallback(idleId);
+      clearTimeout(timerId);
+    };
+  }, []);
+
+  return ready;
+}
 
 function Portfolio() {
   const [paletteOpen, setPaletteOpen] = useState(false);
   const reduceMotion = useReducedMotion();
+  const sceneReady = useIdleReady();
 
   useEffect(() => {
     const onKeyDown = (event) => {
@@ -31,15 +61,17 @@ function Portfolio() {
 
   return (
     <div className="relative min-h-screen text-ink">
-      <Suspense fallback={null}>
-        <BackgroundScene animated={!reduceMotion} />
-      </Suspense>
+      {sceneReady && (
+        <Suspense fallback={null}>
+          <BackgroundScene animated={!reduceMotion} />
+        </Suspense>
+      )}
 
       <Header onOpenPalette={() => setPaletteOpen(true)} />
 
       <main>
         <section id="home">
-          <Home />
+          <Home sceneReady={sceneReady} />
         </section>
         <section id="about">
           <About />
@@ -68,7 +100,9 @@ export default function App() {
   return (
     <ThemeProvider>
       <LanguageProvider>
-        <Portfolio />
+        <LazyMotion features={domAnimation}>
+          <Portfolio />
+        </LazyMotion>
       </LanguageProvider>
     </ThemeProvider>
   );

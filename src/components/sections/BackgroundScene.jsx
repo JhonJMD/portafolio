@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useTheme } from '../../context/ThemeContext';
 import { scenePalette } from '../../config/portfolioConfig';
@@ -7,6 +7,20 @@ import { scenePalette } from '../../config/portfolioConfig';
 const BOUNDS = { x: 9, y: 5.5, z: 3 };
 const LINK_DISTANCE = 2.3;
 const MAX_SEGMENTS_PER_NODE = 4;
+const REFERENCE_FPS = 60;
+
+// The network is decoration: render it at a capped rate instead of every display frame.
+function FrameLimiter({ fps, active }) {
+  const invalidate = useThree((state) => state.invalidate);
+  useEffect(() => {
+    if (!active) return undefined;
+    const id = setInterval(() => {
+      if (!document.hidden) invalidate();
+    }, 1000 / fps);
+    return () => clearInterval(id);
+  }, [active, fps, invalidate]);
+  return null;
+}
 
 function Network({ count, animated }) {
   const { isDarkMode } = useTheme();
@@ -39,11 +53,13 @@ function Network({ count, animated }) {
     return () => window.removeEventListener('pointermove', onMove);
   }, []);
 
-  useFrame((state) => {
+  useFrame((state, delta) => {
+    // Velocities are tuned for 60 fps; scale by elapsed time so speed is independent of the frame cap.
+    const step = Math.min(delta, 0.1) * REFERENCE_FPS;
     const limits = [BOUNDS.x, BOUNDS.y, BOUNDS.z];
     if (animated) {
       for (let i = 0; i < count * 3; i += 1) {
-        positions[i] += velocities[i];
+        positions[i] += velocities[i] * step;
         if (Math.abs(positions[i]) > limits[i % 3]) velocities[i] *= -1;
       }
     }
@@ -70,8 +86,9 @@ function Network({ count, animated }) {
 
     if (animated) {
       const camera = state.camera;
-      camera.position.x += (pointer.current.x * 0.8 - camera.position.x) * 0.03;
-      camera.position.y += (pointer.current.y * 0.5 - camera.position.y) * 0.03;
+      const ease = 1 - 0.97 ** step;
+      camera.position.x += (pointer.current.x * 0.8 - camera.position.x) * ease;
+      camera.position.y += (pointer.current.y * 0.5 - camera.position.y) * ease;
       camera.lookAt(0, 0, 0);
     }
   });
@@ -95,16 +112,19 @@ function Network({ count, animated }) {
 }
 
 export default function BackgroundScene({ animated = true }) {
-  const count = useMemo(() => (window.innerWidth < 768 ? 36 : 80), []);
+  const isSmallScreen = useMemo(() => window.innerWidth < 768, []);
+  const count = isSmallScreen ? 36 : 80;
+  const fps = isSmallScreen ? 24 : 30;
 
   return (
-    <div className="pointer-events-none fixed inset-0 -z-10" aria-hidden="true">
+    <div className="fade-in pointer-events-none fixed inset-0 -z-10" aria-hidden="true">
       <Canvas
-        dpr={[1, 1.5]}
-        frameloop={animated ? 'always' : 'demand'}
+        dpr={[1, 1.25]}
+        frameloop="demand"
         camera={{ position: [0, 0, 9], fov: 55 }}
-        gl={{ alpha: true, antialias: true, powerPreference: 'low-power' }}
+        gl={{ alpha: true, antialias: false, powerPreference: 'low-power' }}
       >
+        <FrameLimiter fps={fps} active={animated} />
         <Network count={count} animated={animated} />
       </Canvas>
     </div>
